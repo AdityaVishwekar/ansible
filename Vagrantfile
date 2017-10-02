@@ -21,6 +21,13 @@ Vagrant.configure("2") do |config|
     web.vm.network "forwarded_port", guest: 80, host: 8080
   end
 
+  config.vm.define "archlinux" do |archlinux|
+    archlinux.vm.box="terrywang/archlinux"
+    archlinux.vm.hostname = "archlinux"
+    archlinux.vm.network "private_network", ip: "192.168.33.50"
+    archlinux.vm.network "forwarded_port", guest: 80, host: 8081
+  end
+
   # DB server
   config.vm.define "db" do |db|
     db.vm.box = "ubuntu/trusty64"

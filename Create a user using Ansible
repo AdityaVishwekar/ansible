@@ -1,0 +1,6 @@
+# Create a user using Ansible
+
+#Ansible commands
+ansible webservers -i ../inventory_prod -m user -a "name={{username}} password=12345" --sudo
+
+ansible datacenter -i inventory -m ping -u vagrant -k

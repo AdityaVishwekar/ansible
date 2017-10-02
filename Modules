@@ -1,0 +1,87 @@
+# modules
+3 Types of Modules
+1. Core
+2. Extra
+3. Deprecated
+
+List all the modules
+$ ansible-doc -l
+
+Information of specific module
+$ ansible-doc <name>
+
+How to use module in playbook
+$ ansible-doc -s <name>
+
+Module Categories
+1. Manage Servers
+2. Deploy Configurations
+3. Configure network equipment
+4. Maintain virtual servers
+5. Manage databases and tables
+6. Deploy load-balancer configurations
+
+Commonly Used Modules
+1. Copy Module
+	a. Copies a file from local box to remote system
+	b. Has "backup" capability
+	c. Can do validation remotely
+2. Fetch Module
+	a. Pulls a file from remote host to local system
+	b. Can use md5 checksums to validate
+3. Apt Module
+	a. Manages installed applications on Debian-based systems
+	b. Can install, update, or delete packages
+	c. Can update entire system
+4. Yum Module
+	a. Manages installed applications on Redhat-based systems
+	b. Can install, update, or delete packages
+	c. Can update entire system
+5. Service Module
+	a. Can stop, start, or restart services
+	b. Can enable services to start on boot
+6. Setup Module
+	a. Gather facts on remote systems
+	b. Used in Playbooks
+
+# Check and Install apache2 service on Web1 server
+vagrant@acs:~/exercise_5$ ansible webservers -i inventory -m apt -a "name=apache2 state=present" --sudo
+
+	# Start Apache2 service on Web1 server
+	vagrant@acs:~/exercise_5$ ansible webservers -i inventory -m service -a "name=apache2 enabled=yes state=started" --sudo
+
+# Check and Install MySQL service on DB1 server
+vagrant@acs:~/exercise_5$ ansible dbservers -i inventory -m apt -a "name=mysql-server state=present" --sudo
+
+	# Start MySQL service on DB server
+	vagrant@acs:~/exercise_5$ ansible dbservers -i inventory -m service -a "name=mysql state=started" --sudo
+
+# If you're not able to access the Apache webpage at 192.168.33.20, it is because of the Firewall
+	# You disable Firewall by the stopping the "iptables service" using Ansible
+	vagrant@acs:~/exercise_5$ ansible webservers:dbservers -i inventory -m service -a "name=iptables state=stopped" --sudo
+
+# In the above comment we're using Host/Group Target Patterns
+4 Types
+1. OR ( group1:group2 ) - Perform action on hosts of both the groups
+2. NOT (!group 2) - 	  Perform action on hosts of all the groups except group2
+3. Wildcard (web*.ex.com)-Perform action on all the hosts whose group name starts with web and ends with .ex.com
+4. Regex (~web[0-9]+) - Perform action on all the hosts whose group has "web" and number[0-9] at the end
+
+# Complex Pattern
+1. AND - Intersection
+	(group1:&group2) - Talk to hosts present in group1 and group2
+2. webserver:&prod:!python3
+	Hosts defined in Webservers AND Prod but NOT in Python3
+
+# Setup Module - Gather facts of the servers
+vagrant@acs:~/exercise_5$ ansible web1 -i inventory -m setup
+	# View only Network Interfaces
+	vagrant@acs:~/exercise_5$ ansible web1 -i inventory -m setup -a "filter=ansible_eth"
+	# View hard drives running on the system
+	vagrant@acs:~/exercise_5$ ansible web1 -i inventory -m setup -a "filter=ansible_mounts"
+	# Dump all this data into file - Below commands creates a setup directory with the information of all the servers stored in seperate files
+	vagrant@acs:~/exercise_5$ ansible all -i inventory -m setup --tree ./setup	
+
+
+
+

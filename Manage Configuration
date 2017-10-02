@@ -1,0 +1,6 @@
+# Manage Configuration
+
+# Disable Host-key checking for servers
+vi ansible.cfg
+  --> [defaults]
+  --> host_key_checking=FALSE
